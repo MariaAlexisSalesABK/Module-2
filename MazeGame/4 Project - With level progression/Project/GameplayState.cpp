@@ -26,7 +26,7 @@ constexpr int kEscapeKey = 27;
 
 GameplayState::GameplayState(StateMachineExampleGame* pOwner)
 	: m_pOwner(pOwner)
-	, m_beatLevel(false)
+	, m_didBeatLevel(false)
 	, m_skipFrameCount(0)
 	, m_currentLevel(0)
 	, m_pLevel(nullptr)
@@ -60,10 +60,11 @@ void GameplayState::Enter()
 {
 	Load();
 }
-
+//TODO: Refactor
 bool GameplayState::Update(bool processInput)
 {
-	if (processInput && !m_beatLevel)
+	//TODO: write a function to handle input
+	if (processInput && !m_didBeatLevel)
 	{
 		int input = _getch();
 		int arrowInput = 0;
@@ -119,12 +120,13 @@ bool GameplayState::Update(bool processInput)
 			HandleCollision(newPlayerX, newPlayerY);
 		}
 	}
-	if (m_beatLevel)
+	//TODO: Create a function that handles the below
+	if (m_didBeatLevel)
 	{
 		++m_skipFrameCount;
 		if (m_skipFrameCount > kFramesToSkip)
 		{
-			m_beatLevel = false;
+			m_didBeatLevel = false;
 			m_skipFrameCount = 0;
 			++m_currentLevel;
 			if (m_currentLevel == m_LevelNames.size())
@@ -146,7 +148,7 @@ bool GameplayState::Update(bool processInput)
 
 	return false;
 }
-
+//TODO: Refactor
 void GameplayState::HandleCollision(int newPlayerX, int newPlayerY)
 {
 	PlacableActor* collidedActor = m_pLevel->UpdateActors(newPlayerX, newPlayerY);
@@ -238,7 +240,7 @@ void GameplayState::HandleCollision(int newPlayerX, int newPlayerY)
 			assert(collidedGoal);
 			collidedGoal->Remove();
 			m_player.SetPosition(newPlayerX, newPlayerY);
-			m_beatLevel = true;
+			m_didBeatLevel = true;
 			break;
 		}
 		default:
